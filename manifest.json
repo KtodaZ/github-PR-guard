@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+
+  "name": "Github PR Guard",
+  "description": "This extension warns you when you creating a pull request to a master branch.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "css": ["mystyles.css"],
+      "js": ["jquery.js", "myscript.js"]
+    }
+  ]
+}
