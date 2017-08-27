@@ -22,8 +22,7 @@
   "content_scripts": [
     {
       "matches": ["*://github.com/*"],
-      "js": ["githubScript.js"],
-      "run_at": "document_end"
+      "js": ["githubScript.js"]
     }
   ]
 }

@@ -5,22 +5,35 @@ var whitelistedBranchPrefixes = ["hotfix", "release", "breaking-release", "pre-h
 
 var baseBranchXpath = '//*[@id="js-repo-pjax-container"]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/button/span';
 var headBranchXpath = '//*[@id="js-repo-pjax-container"]/div[2]/div[1]/div[1]/div[3]/div[2]/div[2]/button/span';
+var submitButtonXpath = '//*[@id="new_pull_request"]/div[2]/div/div/div[3]/button';
+
+var classThatIsOnlyFoundOnThePRPage = '.range-cross-repo-pair';
+
+var areYouSureMsg = "HEAD/BASE branches are invalid. Are you sure you want to submit?";
+var invalidBranchesMsg = "HEAD/BASE branches are invalid.";
+
 
 function main() {
     debug("main running");
-    
-    if (document.querySelector('.range-cross-repo-pair') !== null) {
+
+    if (isPageOnPRPage()) {
         debug("detected branches");
-        
+
         if (!areBranchesValid()) {
             debug("branches are not valid");
-            
-            alert("Invalid branches. Do not PR!!!!!!")
+
+            alert(invalidBranchesMsg);
         }
+
+        changeSubmitBtnOnClickFunctionalityToAlertOnBadBranch();
     }
 }
+
+function isPageOnPRPage() {
+    return document.querySelector(classThatIsOnlyFoundOnThePRPage) !== null;
+}
+
 function areBranchesValid() {
-    debug(isHeadBranchAWhitelistedBranch());
     return (isBaseBranchMaster() && isHeadBranchAWhitelistedBranch()) || (!isBaseBranchMaster());
 }
 
@@ -40,9 +53,32 @@ function getBranchNamePrefix(branchName) {
     return branchName.substring(0, branchName.indexOf("/"));
 }
 
+
+function changeSubmitBtnOnClickFunctionalityToAlertOnBadBranch() {
+    var createPullRequestButton = getElementByXpath(submitButtonXpath);
+    if(!createPullRequestButton) return;
+
+    var hiddenSubmitButton = createHiddenSubmitButton();
+    createPullRequestButton.parentNode.appendChild(hiddenSubmitButton);
+
+    createPullRequestButton.type = 'button'; // disable submit functionality
+    createPullRequestButton.onclick = function () {
+        if(areBranchesValid() || ( !areBranchesValid() && confirm(areYouSureMsg) )) {
+            hiddenSubmitButton.click();
+        }
+    };
+}
+
+function createHiddenSubmitButton() {
+    var hiddenSubmitButton = document.createElement("button");
+    hiddenSubmitButton.style.visibility = 'hidden';
+    return hiddenSubmitButton;
+}
+
+
 function getTextContentByXpath(xpath) {
-    var baseBranch = getElementByXpath(xpath);
-    return baseBranch.textContent;
+    var element = getElementByXpath(xpath);
+    return element ? element.textContent : element;
 }
 
 function getElementByXpath(path) {
