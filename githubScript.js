@@ -1,7 +1,7 @@
 var debugToggle = 0;
 
 var masterBranchName = "master";
-var whitelistedBranchPrefixes = ["hotfix", "release", "breaking-release", "pre-hotfix", "pre-release", "pre-breaking-release"];
+var whitelistedBranchPrefixes = ["hotfix", "release", "breaking-release", "pre-hotfix", "pre-release", "pre-breaking-release", "patch"];
 
 var baseBranchXpath = '//*[@id="js-repo-pjax-container"]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/button/span';
 var headBranchXpath = '//*[@id="js-repo-pjax-container"]/div[2]/div[1]/div[1]/div[3]/div[2]/div[2]/button/span';
